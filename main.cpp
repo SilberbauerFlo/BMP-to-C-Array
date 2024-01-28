@@ -14,6 +14,7 @@ int main(void) {
 
 	uint32_t BmpWidth = 0;
 	uint32_t BmpHeight = 0;
+
 	/*
 	 * these variables determine the length of the array used to transfer the data
 	 * from the bitmap to the header file
@@ -36,12 +37,14 @@ int main(void) {
 
 	BmpName[NameLength-3] = 'h';
 	BmpName[NameLength-2] = 0;
+
 	/*
 	 * E|x|a|m|p|l|e|.|b|m|p
 	 * 0|1|2|3|4|5|6|7|8|9|10 -> NameLength = 11
 	 *                 ^ first rewrites the b with h
 	 *                   ^ then rewrites the m with a NULL character
 	 */
+
 	cArr = fopen(BmpName,"w"); //creates a new file using the modified name in writing mode
 
 	BmpName[NameLength-4] = 0;                  //rewrites the dot with NULL
