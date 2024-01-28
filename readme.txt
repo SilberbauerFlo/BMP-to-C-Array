@@ -1,0 +1,1 @@
+write the filename of the file to convert into the BMP.txt file and put the BMP file into the same folder
