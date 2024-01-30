@@ -13,6 +13,7 @@ int main(void) {
 	fpos_t NameLength = 0;              //used to rewrite the bitmaps' name for further use
 
 	uint32_t BmpSize = 0;
+	uint32_t BmpPixels = 0;
 	/*
 	 * this variable determines the length of the array used
 	 * to transfer the data from the bitmap to the header file
@@ -24,11 +25,14 @@ int main(void) {
 	fclose(file);
 
 	bmp = fopen(BmpName,"r");  //opens the bitmap using the name obtained from the file.txt
-	fseek(bmp,0x2,SEEK_SET);   //moves the cursor to the address 0x2 (the first byte of the size of a bitmap)
-	fread(&BmpSize,4,1,bmp);   //reads 4 bytes (the size of a bitmap)
+	fseek(bmp,0x2,SEEK_SET);   //moves the cursor to the address 0x2 to read the size of the bitmap
+	fread(&BmpSize,4,1,bmp);   //reads 4 bytes
+	fseek(bmp,0xA,SEEK_SET);   //moves the cursor to the address 0xA to read the starting address of the pixeldata in the array
+	fread(&BmpPixels,4,1,bmp); //reads 4 bytes
 
 		printf("Filename = %s\n", BmpName); //outputs some data
-		printf("FileSize = %u", BmpSize);
+		printf("FileSize = %u\n", BmpSize);
+		printf("PixelAddr = %u\n", BmpPixels);
 
 	uint8_t BMP[BmpSize];       //creates an array to store all the data of the bitmap
 	fseek(bmp,0,SEEK_SET);      //moves the cursor back to the start within the bitmap
@@ -52,7 +56,15 @@ int main(void) {
 	fprintf(cArr,BmpName);                      //prints the modified name and stops when it encounters a NULL character
 	fprintf(cArr,"[] = {\n  0x%.2x",BMP[0]);    //prints the first byte
 
-	for(uint32_t i = 1; i < BmpSize; i++) { //prints the rest of the data and starts a new line after every 12 bytes
+	//sets the alpha value (transparency) of every white pixel to 0
+	for(uint32_t i = BmpPixels; i < BmpSize; i += 4) {
+		if((BMP[i+1] == 0xFF) && (BMP[i+2] == 0xFF) && (BMP[i+3] == 0xFF)) {
+			BMP[i] = 0x00;
+		}
+	}
+
+	//prints the rest of the data and starts a new line after every 12 bytes
+	for(uint32_t i = 1; i < BmpSize; i++) {
 		fprintf(cArr,", ");
 		if(!(i % 12)) fprintf(cArr,"\n  ");
 		fprintf(cArr,"0x%.2x",BMP[i]);
