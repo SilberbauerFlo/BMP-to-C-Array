@@ -56,13 +56,6 @@ int main(void) {
 	fprintf(cArr,BmpName);                      //prints the modified name and stops when it encounters a NULL character
 	fprintf(cArr,"[] = {\n  0x%.2x",BMP[0]);    //prints the first byte
 
-	//sets the alpha value (transparency) of every white pixel to 0
-	for(uint32_t i = BmpPixels; i < BmpSize; i += 4) {
-		if((BMP[i+1] == 0xFF) && (BMP[i+2] == 0xFF) && (BMP[i+3] == 0xFF)) {
-			BMP[i] = 0x00;
-		}
-	}
-
 	//prints the rest of the data and starts a new line after every 12 bytes
 	for(uint32_t i = 1; i < BmpSize; i++) {
 		fprintf(cArr,", ");
