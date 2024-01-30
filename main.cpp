@@ -62,7 +62,7 @@ int main(void) {
 		if(!(i % 12)) fprintf(cArr,"\n  ");
 		fprintf(cArr,"0x%.2x",BMP[i]);
 	}
-	fprintf(cArr,"}");
+	fprintf(cArr,"};");
 }
 
 
